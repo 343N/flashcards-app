@@ -15,10 +15,11 @@ Settings are located in `src/settings.ts`
 |backupIntervalsHrs| How often backups will be created, in hours|
 |syncCodeLifetimeHrs| How long a sync code should be valid, in hours|
 
-Settings can also be set on the command-line, using the setting name as a command line argument. For example
+Settings can also be set on the command-line, using the setting name as a command line argument. For example, running
 ```
 node . --serverPort 8080
-``` will change the server port to 8080.
+``` 
+on the command-line, will override the server port, setting it to 8080.
 
 ## Compiling and Running
 Run `npm install` to retrieve dependencies, and `npm run build` to create a packed, non-minified file `app-bundle.js`.
