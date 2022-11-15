@@ -1,5 +1,4 @@
 const path = require('path');
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 const nodeWebExternals = require("webpack-node-externals");
 
 module.exports = {
