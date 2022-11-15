@@ -25,7 +25,7 @@ const server = http.createServer((req, res) => {
     RH.handleRequest(req, res);
 });
 server.listen(SERVERPORT);
-
+console.log("Running on port " + SERVERPORT);
 
 util.backupDataFolders()
 setInterval(() => {

@@ -12,14 +12,20 @@
   "license": "ISC",
   "dependencies": {
     "@types/archiver": "^5.3.1",
+    "@types/command-line-args": "^5.2.0",
     "@types/cookie": "^0.5.1",
     "@types/mime-types": "^2.1.1",
+    "@types/minimist": "^1.2.2",
+    "@types/yargs": "^17.0.13",
     "archiver": "^5.0.2",
+    "command-line-args": "^5.2.1",
     "cookie": "^0.4.1",
     "mime-types": "^2.1.27",
+    "minimist": "^1.2.7",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "otplib": "^12.0.1",
-    "webpack-node-externals": "^3.0.0"
+    "webpack-node-externals": "^3.0.0",
+    "yargs": "^17.6.2"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
