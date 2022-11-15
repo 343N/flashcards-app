@@ -1,0 +1,31 @@
+{
+  "name": "flashcards-app",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "app-bundle.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx webpack"
+  },
+  "author": "343N",
+  "license": "ISC",
+  "dependencies": {
+    "@types/archiver": "^5.3.1",
+    "@types/cookie": "^0.5.1",
+    "@types/mime-types": "^2.1.1",
+    "archiver": "^5.0.2",
+    "cookie": "^0.4.1",
+    "mime-types": "^2.1.27",
+    "node-polyfill-webpack-plugin": "^2.0.1",
+    "otplib": "^12.0.1",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "ts-loader": "^9.4.1",
+    "typescript": "^4.8.4",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^4.10.0"
+  }
+}

@@ -1,0 +1,34 @@
+.container{
+    max-width: 576px
+}
+
+.card{
+    margin-bottom: 1rem;
+}
+
+#settingsModalBody > * {
+    margin-bottom: 1rem;
+    /* margin-left: 1rem; */
+    /* margin-right: 1rem; */
+}
+#settingsModalBody > :is(h1,h2,h3,h4,h5,h6) {
+    /* margin-bottom: 1rem; */
+    /* margin-left: 0rem; */
+}
+
+@keyframes cardSpin {
+    from {transform: rotate3d(0,0,0, 180deg)}
+    to {transform:rotate3d(0,1,0,180deg)}
+}
+
+#completeCardModalBody > .card { 
+    
+    
+}
+
+
+
+
+.alert {
+    font-size: small;
+}

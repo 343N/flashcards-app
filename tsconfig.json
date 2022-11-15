@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "outDir": "./dist",
+        "allowJs": true,
+        "target": "ES2022",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "module":"CommonJS"
+    },
+        "include": [
+        "./src/**/*"
+    ]
+}
