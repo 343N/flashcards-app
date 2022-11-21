@@ -1,7 +1,7 @@
 # Flashcards App
 A web server and client built in TypeScript, that lets users create flashcards and test them at intervals akin to [Spaced Repetition learning](https://en.wikipedia.org/wiki/Spaced_repetition). The flashcards are stored on the server, and users can sync their data across devices without needing an account, using a sync code.
 
-I made this in 2020, but I migrated to TypeScript and added cross-device scripting when I created this repository. It's a bit messy.
+I made this in 2020, but I migrated to TypeScript and added cross-device syncing when I created this repository. It's currently in the process of being prettied up and cleaned, mainly on the front-end.
 
 ## Settings
 Settings are located in `src/settings.ts`
