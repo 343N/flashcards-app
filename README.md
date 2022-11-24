@@ -27,7 +27,7 @@ Run `npm install` to retrieve dependencies, and `npm run build` to create a pack
 Run with `node .` or `npm run`
 
 ## Security
-This is not built to hold sensitive personal information. Users are authenticated by a token and that token *only*. There will be no implementation of user-authentication or an account system unless otherwise stated.
+This is not built to hold sensitive personal information. Users are authenticated by a token and that token *only*. There will be no implementation of user-authentication or an account system until further notice.
 
 The `client` directory acts as a static hosting directory. Everything in `client` is exposed to the web.
 
