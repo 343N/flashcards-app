@@ -43,14 +43,14 @@ class CardTestHandler {
         const result = await exp.test(card);
         const removeCover = this.cards.length == 0;
         if (result == CardTestHandler.RESULT.CORRECT) {
-            card.stage = card.stage;
-            // card.lastCompletion = new Date();
+            card.stage++;
+            card.lastCompletion = new Date();
             exp.close(true, {remove_cover: removeCover})
             await new Promise((res, rej) => exp.addEventListener('preDestroy', res))
         }
         else if (result == CardTestHandler.RESULT.INCORRECT) {
             card.stage = 0;
-            // card.lastCompletion = new Date();
+            card.lastCompletion = new Date();
             exp.close(true, {remove_cover: removeCover})
             await new Promise((res, rej) => exp.addEventListener('preDestroy', res))
         }

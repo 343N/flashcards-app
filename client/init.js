@@ -344,6 +344,7 @@ async function initCompleteCards() {
     $("#completeCardsButton").prop('disabled', true)
     const handler = new CardTestHandler(cards)
     await handler.startTest()
+    updateCardOverview()
     await delay(250)
     $("#completeCardsButton").prop('disabled', false)
 
