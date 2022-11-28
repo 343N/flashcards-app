@@ -82,15 +82,39 @@ function sendEditCardRequest(data) {
 }
 
 function rebuildCardList() {
-    let listContainer = $("#cardsList")
-    listContainer.empty()
-    listContainer.append(`
-        <h2>Cards</h2>
-        ${cards.length} total
-        `)
+    listContainer = $("#cardsList")[0]
+    // .get()
+    // listContainer.empty()
 
-    for (let c in cards)
-        listContainer.append(new CardDom(cards[c]).getHTML())
+    let headingContainer = listContainer.querySelector('.headingContainer')
+    let cardsContainer = listContainer.querySelector('#cardsContainer')
+    if (!headingContainer) {
+        headingContainer = document.createElement("div")
+        headingContainer.classList.add("container")
+        headingContainer.classList.add("headingContainer")
+        let heading = document.createElement("h2")
+        heading.textContent = "Cards"
+
+
+
+        headingContainer.append(heading)
+        // headingContainer.append(`${cards.length} total`)
+        listContainer.append(headingContainer)
+    }
+
+    if (!cardsContainer) {
+        cardsContainer = document.createElement("div")
+        cardsContainer.id = "cardsContainer"
+        cardsContainer.classList.add('container')
+        listContainer.append(cardsContainer)
+    }
+
+    cardsContainer.replaceChildren()
+    for (let card of cards) {
+        let cd = new CardDom(card)
+        cardsContainer.append(cd.getHTML())
+        cd.adjustTextSize()
+    }
 
     CardDom.registerButtonHandlers()
 
@@ -120,6 +144,24 @@ function updateCardOverview() {
 
 }
 
+
+function removeCardData(id) {
+    for (let c in cards)
+        if (cards[c].id == id) {
+            cards.splice(c, 1)
+            break;
+        }
+    updateCardOverview()
+}
+
+function handleBackEvent() {
+    window.addEventListener('popstate', (event) => {
+        if (sideNavOpen()) {
+            closeSideNav()
+            event.preventDefault()
+        }
+    })
+}
 
 function getDueCards() {
     let dueCards = [];
@@ -171,6 +213,8 @@ function handleFlipCard() {
 
 }
 
+
+
 function prepareCardComplete(card) {
     if (!card) card = dueCardsQueue[currentCardIndex]
     hasFlipped = false
@@ -199,7 +243,6 @@ function handleCompleteCard(isCorrect) {
     currentCard.wasCorrect = isCorrect
 
     if (isCorrect) {
-
         updateCard(currentCard, (response) => {
             console.log("SAVED CARD DATA!!!")
             console.log(response)
@@ -251,6 +294,17 @@ function getCorrectCardsCount() {
     return count
 }
 
+async function updateCardAsync(card) {
+    let req = new XMLHttpRequest()
+    req.open('PUT', window.location.origin + "/updateCard")
+    req.send(JSON.stringify(card))
+    return new Promise((resolve, reject) => {
+        req.addEventListener("load", (event) => {
+            resolve(req)
+        })
+    })
+
+}
 
 function updateCard(card, handler) {
     let req = new XMLHttpRequest()
@@ -263,20 +317,35 @@ function updateCard(card, handler) {
 
 }
 
+function getTransformProperties(element){
+    if (element == null) return;
+    const regex = /([^ \(\)]+)\(([^)]*)\)+/g
+    const transform = element.style.transform
+    const properties = {}
+    for (let match of transform.matchAll(regex)){
+        properties[match[1]] = match.length > 2 && match[2] || ""
+    }
 
-function initCompleteCards() {
-    dueCardsQueue = getDueCards();
+    return properties
+}
 
-    if (dueCardsQueue.length == 0) return
-    $('#completeCardModal').modal('show')
-    hasFlipped = false
-    correctCards = 0;
-    incorrectCards = 0;
-    currentCardIndex = 0;
-    currentCard = dueCardsQueue[currentCardIndex]
+function setTransformProperties(element, properties, merge=false){
+    if (element == null) return;
+    if (properties == null) return (element.style.transform = "")
+    if (merge) properties = { ...getTransformProperties(element), ...properties }
 
-    prepareCardComplete()
-    // $('completeCardModal').modal('show')
+    const transform = Object.keys(properties).map(key => `${key}(${properties[key]})`).join(" ")
+    element.style.transform = transform
+}
+
+
+async function initCompleteCards() {
+    if (cards.length == 0) return;
+    $("#completeCardsButton").prop('disabled', true)
+    const handler = new CardTestHandler(cards)
+    await handler.startTest()
+    await delay(250)
+    $("#completeCardsButton").prop('disabled', false)
 
 }
 
@@ -321,10 +390,12 @@ function sendAddCardRequest(data) {
 
 function initializeCards(list) {
     cards = [];
+    cardDict = {};
     for (let card in list) {
         let c = new Card(list[card])
         if (c.getDueDateCount() != -1)
             cards.push(c)
+        cardDict[c.id] = c
     }
 
     rebuildCardList()
@@ -359,6 +430,7 @@ function initPage() {
         toggleNotificationPermission(e)
     })
     hideAllAlerts()
+    handleBackEvent()
 
     grabSettings()
 }
@@ -390,10 +462,37 @@ function toggleNotificationPermission(e) {
 
 function openSettingsModal() {
     console.log("Opening Settings Modal")
-    $('#notificationsCheckbox').prop('checked', Boolean(SETTINGS.notifications))
+    // $('#notificationsCheckbox').prop('checked', Boolean(SETTINGS.notifications))
     retrieveSyncData()
+    openSideNav()
     // $('#settingsUserTokenInput').val(SETTINGS.token)
 }
+
+function openSideNav() {
+    $("nav#sidenav").addClass('active')
+    $("div#sidenavcover").addClass('active')
+    // $("body").addClass('active')
+}
+
+function closeSideNav() {
+    if ($("div#sidenavcover").hasClass("flashcard-cover")) {
+        ExpandedCard.close()
+    } else {
+        $("nav#sidenav").removeClass('active')
+        $("div#sidenavcover").removeClass('active')
+    }
+
+}
+
+function sideNavOpen() {
+    return $("nav#sidenav").hasClass('active')
+}
+
+function closePageCover() {
+    $("div#sidenavcover").removeClass('active')
+}
+
+
 
 function showAlert(alertname, a, b, c) {
     alerts[alertname.toLowerCase()](a, b, c)
@@ -405,6 +504,7 @@ function retrieveSyncData() {
     req.addEventListener("load", (response) => {
         console.log(response)
         console.log(response.target.status)
+
         if (response.target.status == 200) {
             SYNC_DATA = JSON.parse(response.target.response)
             $("#SETTINGS_SYNC_CODE").text(SYNC_DATA.code)
@@ -412,6 +512,27 @@ function retrieveSyncData() {
     })
 
     req.send()
+}
+
+function drawPoint(x, y, color = "red") {
+    let div = document.createElement("div")
+    div.style.backgroundColor = color
+    div.style.width = "3px"
+    div.style.height = "3px"
+    div.style.display = "block"
+    div.style.position = "fixed"
+    div.style.left = (x - 1) + "px"
+    div.style.top = (y - 1) + "px"
+
+    document.documentElement.appendChild(div)
+}
+
+function drawCornersOfElement(element) {
+    let rect = element.getBoundingClientRect()
+    drawPoint(rect.left, rect.top)
+    drawPoint(rect.right, rect.top)
+    drawPoint(rect.left, rect.bottom)
+    drawPoint(rect.right, rect.bottom)
 }
 
 
@@ -430,6 +551,7 @@ function doSync() {
         if (response.target.status == 200) {
             let newData = JSON.parse(response.target.response)
             initializeCards(newData)
+            closeSideNav()
             retrieveSyncData()
         }
     });
@@ -440,11 +562,7 @@ function doSync() {
 // a dictionary of cards would work better but it's too late now
 // lmao
 function getCard(id) {
-    for (let c of cards)
-        if (c.id == id)
-            return c
-
-    return null
+    return id in cardDict && cardDict[id] || null;
 }
 
 function editCardButtonHandler(event, cardId) {
@@ -467,8 +585,38 @@ function editCardButtonHandler(event, cardId) {
 
 }
 
+function getCardData(cardId) {
+    let card = getCard(cardId)
+    if (!card) return
+
+    return {
+        front: card.front,
+        back: card.back
+    }
+}
 
 const alerts = {}
+
+function request(method, url, data = null) {
+    return new Promise((res, rej) => {
+        if (!method || !url) rej("Invalid request")
+        const req = new XMLHttpRequest()
+        req.open(method, url)
+        req.addEventListener("load", (event) => {
+            const response = event.target
+            response.status == 200 ? res(response) : rej(response)
+        })
+        req.addEventListener('timeout', (e) => {
+            rej(e)
+        })
+        req.send(data)
+    })
+
+}
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 alerts['deniednotifications'] = () => {
     $('#disablednotificationsAlert').css('display', '')

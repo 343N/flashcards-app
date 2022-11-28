@@ -3,3 +3,4 @@ data
 backup
 app-bundle**
 .vscode
+*.psd

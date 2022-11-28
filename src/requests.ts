@@ -206,7 +206,8 @@ const PUT_REQUESTS: any = {
 
         let curSess = sm.getSessionFromRequest(req)
         let cards = sm.getSessionCards(curSess as string)
-        if (curSess && cards[data.id]) {
+        let newCard = new Card(data)
+        if (curSess && cards[data.id] && newCard.isValid()) {
             cards[data.id] = new Card(data)
             res.writeHead(200)
             sm.saveSessionCards(curSess, cards)
@@ -217,6 +218,11 @@ const PUT_REQUESTS: any = {
         console.log("Sending request completion back to client.")
         res.end()
     },
+
+
+}
+
+const DELETE_REQUESTS = {
 
     '/removeCard': async (req: Request, res: Response, options: HandlerOptions) => {
 
@@ -238,7 +244,6 @@ const PUT_REQUESTS: any = {
         console.log("Sending request completion back to client.")
         res.end()
     }
-
 }
 
 const POST_REQUESTS = {
@@ -277,7 +282,8 @@ const POST_REQUESTS = {
 const REQUESTS: any = {
     "PUT": PUT_REQUESTS,
     "GET": GET_REQUESTS,
-    "POST": POST_REQUESTS
+    "POST": POST_REQUESTS,
+    "DELETE": DELETE_REQUESTS
 }
 
 async function getRequestData(request: Request): Promise<string> {

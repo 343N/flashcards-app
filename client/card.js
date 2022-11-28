@@ -65,7 +65,34 @@ class Card {
         Card.interval = interval
     }
 
+    async save(){
+        if (this.deleted) return;
+        console.log(this)
+        let resp = await updateCardAsync(this)
+        console.log(resp)
+        return [this, resp];
+    }
+
+    async delete(){
+        this.deleted = true
+        let resp = await request('DELETE', `/removeCard`, this.id)
+        console.log(resp)
+        if (resp.status == 200) {
+            removeCardData(this.id)
+        } else this.deleted = false
+        return [this, resp];
+    }
+
+
+
+
 
 }
 
 Card.interval = [1, 1, 2, 4, 8, 16, 32, 64]
+
+// function 3dTransform(card){
+//     document.addEventListener("mousemove")
+//     document.addEventListener("touchmove")
+// }
+

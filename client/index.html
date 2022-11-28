@@ -10,6 +10,7 @@
     <!-- Pako, for zlib inflate/deflate -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/1.0.11/pako.min.js"></script> -->
 
+
     <!-- CSS only -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
@@ -22,20 +23,25 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
     </script>
+
     <link rel="stylesheet" type="text/css" href="index.css">
-
-
+    <!-- live.js -->
+    <!-- <script src="live.js"></script> -->
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
+    <!-- Inter font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter">
 
     <!-- meta lol -->
     <meta property="og:title" content="Flashcards" />
     <meta property="og:type" content="website" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <title>Flashcards!</title>
+
 
 
 
@@ -54,16 +60,57 @@
 
 </head>
 
-<body class="d-flex flex-column h-100" onload="grabData();">
-    <nav class="navbar navbar-dark bg-dark " style="margin-bottom: 20px;">
+<body class="d-flex flex-column h-100 bg-dark text-light" onload="grabData();">
+    <nav id="sidenav" class="sidebar-wrapper">
+        <div class="container pt-2">
+
+            <h4 class="pd-1" id="settingsNavLabel">
+               Settings
+            </h4>
+            <!-- Modal Alerts -->
+            <div class="alert alert-danger" role="alert" id="disablednotificationsAlert">
+                We cannot enable notifications. Please enable notifications on your browser!
+            </div>
+            <div class="dropdown-divider"></div>
+            <h5>Notifications (coming soon!)</h5>
+    
+            <div class="form-check" >
+                <input class="form-check-input" type="checkbox" value="" id="notificationsCheckbox" disabled>
+                <label class="form-check-label" for="notificationsCheckbox">
+                    Enable Notifications
+                </label>
+            </div>
+
+            <div class="dropdown-divider"></div>
+    
+            <h5>Sync Data</h5>
+            <p>Sync your data across devices. Sync Code: <span id="SETTINGS_SYNC_CODE"
+                    style="font-weight: bold;">Loading...</span></p>
+    
+            <div class="input-group mb-3" tooltip="Click to copy to clipboard">
+                <div class="input-group-prepend">
+                    <span class="input-group-text bg-dark text-light">Sync Code</span>
+                </div>
+                <input type="text" class="form-control" id="settingsUserTokenInput" aria-label="Sync code input">
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-outline-secondary" tooltip="Copy"><i class="fas fa-sync"
+                            tooltip="Sync data" onclick="doSync()" aria-label="Syncs your data with another device using a sync code."></i></button>
+                </div>
+            </div>
+        </div>
+        </div>
+
+    </nav>
+    <div id="sidenavcover" onclick="closeSideNav()"></div>
+    <nav class="navbar navbar-dark" style="margin-bottom: 20px;">
         <div class="container">
             <a class="navbar-brand" href="#">Flashcards</a>
 
             <ul class="navbar-nav ml-auto">
 
                 <li class="nav-item">
-                    <a class="nav-link" style="cursor: pointer;" data-toggle="modal" data-target="#settingsModal"
-                        onclick="openSettingsModal()">Settings</a>
+                    <a class="nav-link" style="cursor: pointer;" onclick="openSettingsModal()"><i
+                            class="fas fa-cog"></i></i></a>
                 </li>
             </ul>
 
@@ -71,7 +118,7 @@
     </nav>
 
 
-    <main class="flex-shrink-0 container">
+    <main class="flex-shrink-0">
 
         <!-- Toasts Container
                 <div aria-live="polite" aria-atomic="true" style="position: fixed; width: 100%; height: 100%; left: 0; top: 0; pointer-events: none">
@@ -84,15 +131,15 @@
          -->
 
         <!-- FLASHCARDS summary and buttons -->
-        <div style="margin-bottom: 1em; display:none;" id="cardsOverview">
+
+        <div class="container" style="margin-bottom: 1em; display:none;" id="cardsOverview">
             <div class="row align-items-center">
                 <div class="col-6">
-                    <h1>My flashcards</h1>
+                    <h1>Your flashcards</h1>
                 </div>
             </div>
-            <span style="font-size: 2em" id="dueCardCount">0</span> due
-            <br>
-            <span style="font-size: 2em" id="totalCardCount">10</span> total
+            <span style="font-size: 1.5em" id="dueCardCount">0</span> of
+            <span style="font-size: 1.5em" id="totalCardCount">10</span> due
             <button type="button" style="width: 100%; margin-bottom: 0.5rem;" class="btn btn-light" id="addCardButton"
                 data-toggle="modal" data-target="#addFlashcardModal">
                 <i class="fas fa-plus"></i> Add new flashcard
@@ -106,7 +153,7 @@
         <!-- END -->
 
         <!-- LIST OF ALL CARDS -->
-        <div id="cardsList" style="display:none;">
+        <div id="cardsList">
             <!-- <h2>Cards</h2> -->
             <!-- <div class="card mx-auto" style="max-width: 18rem;">
                 <div class="card-body">
@@ -125,7 +172,7 @@
         <!-- END -->
 
         <!-- ADD FLASHCARD MODAL -->
-        <div class="modal fade" id="addFlashcardModal" tabindex="-1" role="dialog" aria-labelledby="addCardModalLabel"
+        <div class="modal fade text-dark" id="addFlashcardModal" tabindex="-1" role="dialog" aria-labelledby="addCardModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -255,7 +302,7 @@
         <!-- Settings Modal -->
         <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel"
             aria-hidden="true">
-            <div class="modal-dialog" role="document">
+            <!-- <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="settingsModalLabel">
@@ -263,10 +310,10 @@
                         </h5>
                     </div>
 
-                    <div class="modal-body" id="settingsModalBody">
+                    <div class="modal-body" id="settingsModalBody"> -->
 
-                        <!-- Modal Alerts -->
-                        <div class="alert alert-danger" role="alert" id="disablednotificationsAlert">
+            <!-- Modal Alerts -->
+            <!-- <div class="alert alert-danger" role="alert" id="disablednotificationsAlert">
                             We cannot enable notifications. Please enable notifications on your browser!
                         </div>
 
@@ -278,10 +325,10 @@
                                 Enable Notifications
                             </label>
                         </div>
-                        <hr class="separator">
+                        <hr class="separator"> -->
 
 
-                        <!-- <div class="input-group mb-3" tooltip="Click to copy to clipboard">
+            <!-- <div class="input-group mb-3" tooltip="Click to copy to clipboard">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">User Token</span>
                             </div>
@@ -292,7 +339,7 @@
                                         class="fas fa-copy" tooltip="Copy" onclick="copyToken()"></i></button>
                             </div>
                         </div> -->
-                        <h5>Sync Data</h5>
+            <!-- <h5>Sync Data</h5>
                         <p>Sync your data across devices. Sync Code: <span id="SETTINGS_SYNC_CODE" style="font-weight: bold;">Loading...</span></p>
 
                         <div class="input-group mb-3" tooltip="Click to copy to clipboard">
@@ -308,19 +355,21 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
+                        </div> -->
+            <!-- </div>
                 </div>
-            </div>
+            </div> -->
         </div>
 
 
 
     </main>
 
-    <footer class="footer mt-auto py-3" style="background-color: #f5f5f5; margin-top: 10rem;">
+    <footer class="footer mt-auto py-3">
         <div class="container text-center text-muted">
-            Made with ❤ by <span data-toggle="tooltip" title="status code 406 NOT ACCEPTABLE">343N</span>
+            Made with <i class="fas fa-heart"></i> by <span data-toggle="tooltip"
+                title="maybe consider adding who i am as a flashcard? 🥺👉👈"><a href="https://343n.co/"
+                    style="text-decoration: none;"></a>343N</a></span>
         </div>
     </footer>
 
@@ -328,6 +377,7 @@
     <script src="init.js"></script>
     <script src="card.js"></script>
     <script src="cardDom.js"></script>
+    <script src="cardTest.js"></script>
 
 
 

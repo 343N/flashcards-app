@@ -45,13 +45,17 @@ class Card {
     get fingerprint(): string  { return this._fingerprint }
 
     validateData(){
-        this.front = this.front.trim()
-        this.back = this.back.trim()
+        this.front = this.front?.trim()
+        this.back = this.back?.trim()
     }
 
     generateFingerprint(){
         this.validateData()
         this.fingerprint = Buffer.from(this.front + this.back).toString('base64')
+    }
+
+    isValid(){
+        return this.front && this.back
     }
     
     toJSON(){

@@ -1,9 +1,323 @@
+:root {
+    box-shadow: 0px 0px 0px 10em #000000;
+    box-shadow: inset 0px 0px 10em 0em #00000040;
+
+    --SIDENAV-WIDTH: 300px;
+    --SIDENAV-TRANSITION: 0.25s;
+    
+}
+
+body {
+    /* transition: transform var(--SIDENAV-TRANSITION) */
+}
+
+body.active{
+    /* transform: translateX(calc(0px - var(--SIDENAV-WIDTH))); */
+}
+
+
 .container{
     max-width: 576px
 }
 
-.card{
+div#cardsContainer {
+    display: flex;
+    align-content: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+}
+
+.card {
+    
+    box-sizing: border-box;
+
+    /* position: absolute; */
+    width: 200px;
+    height: 120px;
+    
+    background: #212121;
+    border: 1px solid #616161;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    padding: 0rem;
+    display: flex;
+    overflow-wrap: break-word;
+    padding: 0.5rem;
+    font-family: "Inter";
+    text-align: center;
+    vertical-align: center;
+    justify-content: center;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    cursor: pointer;
+
+}
+.card:hover:not(.expanded) {
+    /* transform: scale(1.05); */
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.4);
+    
+    
+}
+
+.flashcard.hidden {
+    pointer-events: none;
+    opacity: 0;
+}
+.flashcard > textarea {
+    background-color: transparent;
+    border: none;
+    text-align: center;
+    overflow: hidden;
+    word-wrap: break-word;
+    /* word-break: break-all; */
+    /* width: 180px; */
+    resize:all;
+    line-height: 1.5;
+    font-size: initial;
+    /* font-family: initial; */
+}
+.flashcard > textarea:focus {
+    background-color: transparent;
+    border: none;
+    outline: 0px;
+    text-align: center;
+}
+.flashcard > textarea:focus-visible {
+    background-color: transparent;
+    border: none;
+    outline: 0px;
+    text-align: center;
+}
+
+.flashcard.expanded {
+    position: fixed;
+    pointer-events: all;
+    transform-style:preserve-3d;
+    cursor: default;
+    z-index: 100;
+    margin-left: 0px;
+    margin-top: 0px;
+
+    margin-right: 1rem;
+    margin-bottom: 0.25rem;
+    /* margin-bottom: 0.25rem; */
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.4);
+    /* background-color: rgba(1,0,0,0.5); */
+    /* transition: left 0.5s, top 0.5s, width 0.5s, height 0.5s, translate 0.5s; */
+    transition: left 0.5s, top 0.5s, width 0.5s, height 0.5s, transform 0.5s;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* pointer-events: none; */
+}
+
+.flashcard.expanded > .saveStatus { 
+    position: absolute;
+    /* width: 16px; */
+    /* height: 16px; */
+    left: 176px;
+    /* font-size: small; */
+    top: 96px;
+    color: white;
+    /* background: #D9D9D9; */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+
+}
+
+
+.flashcard.expanded > .button {
+    position: absolute;
+    left: 212px;
+    top: 50%;
+    transform: translate(0, -50%);
+    font-size: 20px;
+    color: rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: color 0.2s;
+    /* pointer-events: none; */
+
+}
+
+.flashcard.expanded > .button.testYes {
+    top: 115%;
+    left: 120px
+}
+.flashcard.expanded > .button.testNo {
+    top: 115%;
+    left: 60px;
+}
+
+.flashcard.expanded > .button:hover {
+    color: rgba(255,255,255,0.6);
+    
+}
+
+.flashcard.expanded > .trashButton.confirm {
+    color: rgba(255,255,255,0.8);
+    text-shadow: #ffffff40 0px 0px 20px;
+}
+
+
+@keyframes trashConfirm {
+    0% {
+        /* pointer-events: none; */
+        
+        cursor: wait;
+        color: rgba(255,255,255,255,0.6)
+        
+    }
+    99% {
+        cursor: wait;
+        color: rgba(255,255,255,255,0.6)
+
+    }
+    100% {
+        cursor: pointer;
+        color: rgba(255,255,255,255,1)
+        /* pointer-events: all; */
+        /* transform: scale(1); */
+    }
+}
+
+.flashcard.expanded > .trashButton{
+    top: 50%;
+    left: 240px;
+}
+
+.flashcard > span {
+    pointer-events: none;
+}
+
+.flashcard.expanded > span {
+    line-height: 1.5;
+    pointer-events: auto;
+}
+.flashcard.expanded > span:hover {
+    line-height: 1.5;
+    cursor: text;
+}
+.flashcard.expanded > span:focus-visible {
+    outline: none;
+}
+
+.flashcard.expanded.error { 
+    animation-iteration-count: 1;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+  }
+
+[invisible],.invisible {
+    opacity: 0!important;
+}
+
+[removed],.removed {
+    display: none!important;
+}
+
+.flashcard.expanded[flipped] { 
+    transition: none;
+    z-index:99;
+    pointer-events: none;
+}
+
+.flashcard.back {
+    background-color: #252525;
+}
+
+.flashcard.expanded:hover {
+    /* transform:rotate3d(0,1,0, 180deg) */
+}
+
+.card:active {
+    transform: scale(1.00);
+    /* transform: trasnformY(1px); */
+}
+
+
+.card > .editButton {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: calc(174px - 0.5rem);
+    top: 10px;
+    display: none;
+    /* background: #D9D9D9; */
+}
+
+.card > .removeButton {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 175px;
+    top: 8px;
+    
+    /* background: #D9D9D9; */
+}
+
+/* .card > .button {
+    opacity: 0.2;
+    color: white;
+    transition: opacity 0.2s;
+}
+
+.card > .button:hover {
+    opacity: 0.4;
+} */
+
+.card > .button > a {
+    text-decoration: none;
+}
+
+div#cardsList > .headingContainer {
     margin-bottom: 1rem;
+}
+
+
+.card > .card-body > .cardTextContainer {
+    /* position: absolute;
+    width: 100%; */
+    display: flex;
+}
+
+.card > .card-body > .buttonContainer {
+    /* margin-left: 1rem; */
+    position:absolute;
+    float: right;
+    box-sizing: border-box;
+    display: flex;
+    width: auto;
+
+}
+
+.card > .card-body >.buttonContainer > a {
+    text-decoration: none;
+    color: #616161;
+    margin-left: 0.1rem;
+    margin-right: 0.1rem;
+    transition: color 0.2s;
+}
+
+.card > .card-body > .buttonContainer > a:hover {
+    color: #e0e0e0;
 }
 
 #settingsModalBody > * {
@@ -11,9 +325,13 @@
     /* margin-left: 1rem; */
     /* margin-right: 1rem; */
 }
-#settingsModalBody > :is(h1,h2,h3,h4,h5,h6) {
-    /* margin-bottom: 1rem; */
-    /* margin-left: 0rem; */
+/* #settingsModalBody > :is(h1,h2,h3,h4,h5,h6) {
+    margin-bottom: 1rem; 
+    margin-left: 0rem;
+} */
+
+.bg-dark {
+    background-color: #212121!important;
 }
 
 @keyframes cardSpin {
@@ -21,12 +339,51 @@
     to {transform:rotate3d(0,1,0,180deg)}
 }
 
-#completeCardModalBody > .card { 
+/* #completeCardModalBody > .card { 
     
     
+} */
+
+
+
+nav#sidenav {
+    
+    width: var(--SIDENAV-WIDTH);
+    transition: transform 0.4s ease;
+    height:100%;
+    position:fixed;
+    z-index: 100;
+    left: 100%;
+    /* color:  */
+    background-color: #151515;
 }
 
 
+nav#sidenav.active {
+    /* width: var(--SIDENAV-WIDTH); */
+    /* left: calc(100% - var(--SIDENAV-WIDTH)); */
+    box-shadow: -10px 0px 10px 0px rgba(0,0,0,0.25);
+    transform: translateX(calc(0px - var(--SIDENAV-WIDTH)));
+    
+}
+
+div#sidenavcover{
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    position:fixed;
+    background-color: #00000080;
+    opacity: 0;
+    transition: opacity var(--SIDENAV-TRANSITION) ease-in-out, backdrop-filter var(--SIDENAV-TRANSITION) ease-in-out;
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
+}
+
+
+div#sidenavcover.active{
+    opacity: 1;
+    z-index: 99;
+}
 
 
 .alert {
