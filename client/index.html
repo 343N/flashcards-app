@@ -35,6 +35,9 @@
     <!-- Inter font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter">
 
+    <!-- AES encryption library -->
+    <script src="aes.js"></script>
+
     <!-- meta lol -->
     <meta property="og:title" content="Flashcards" />
     <meta property="og:type" content="website" />
@@ -65,7 +68,7 @@
         <div class="container pt-2">
 
             <h4 class="pd-1" id="settingsNavLabel">
-               Settings
+                Settings
             </h4>
             <!-- Modal Alerts -->
             <div class="alert alert-danger" role="alert" id="disablednotificationsAlert">
@@ -73,8 +76,8 @@
             </div>
             <div class="dropdown-divider"></div>
             <h5>Notifications (coming soon!)</h5>
-    
-            <div class="form-check" >
+
+            <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="" id="notificationsCheckbox" disabled>
                 <label class="form-check-label" for="notificationsCheckbox">
                     Enable Notifications
@@ -82,11 +85,11 @@
             </div>
 
             <div class="dropdown-divider"></div>
-    
+
             <h5>Sync Data</h5>
             <p>Sync your data across devices. Sync Code: <span id="SETTINGS_SYNC_CODE"
                     style="font-weight: bold;">Loading...</span></p>
-    
+
             <div class="input-group mb-3" tooltip="Click to copy to clipboard">
                 <div class="input-group-prepend">
                     <span class="input-group-text bg-dark text-light">Sync Code</span>
@@ -94,7 +97,8 @@
                 <input type="text" class="form-control" id="settingsUserTokenInput" aria-label="Sync code input">
                 <div class="input-group-append">
                     <button type="button" class="btn btn-outline-secondary" tooltip="Copy"><i class="fas fa-sync"
-                            tooltip="Sync data" onclick="doSync()" aria-label="Syncs your data with another device using a sync code."></i></button>
+                            tooltip="Sync data" onclick="doSync()"
+                            aria-label="Syncs your data with another device using a sync code."></i></button>
                 </div>
             </div>
         </div>
@@ -172,8 +176,8 @@
         <!-- END -->
 
         <!-- ADD FLASHCARD MODAL -->
-        <div class="modal fade text-dark" id="addFlashcardModal" tabindex="-1" role="dialog" aria-labelledby="addCardModalLabel"
-            aria-hidden="true">
+        <div class="modal fade text-dark" id="addFlashcardModal" tabindex="-1" role="dialog"
+            aria-labelledby="addCardModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">

@@ -297,7 +297,7 @@ function getCorrectCardsCount() {
 async function updateCardAsync(card) {
     let req = new XMLHttpRequest()
     req.open('PUT', window.location.origin + "/updateCard")
-    req.send(JSON.stringify(card))
+    req.send(serializeCard(card))
     return new Promise((resolve, reject) => {
         req.addEventListener("load", (event) => {
             resolve(req)
@@ -313,7 +313,7 @@ function updateCard(card, handler) {
     // req.addEventListener("load", () =>{
     //     console.log("SAVED CARD DATA!!!")
     // });
-    req.send(JSON.stringify(card))
+    req.send(serializeCard(card))
 
 }
 
@@ -375,8 +375,8 @@ function sendAddCardRequest(data) {
 
     // console.log(data)
     req.open('PUT', window.location.origin + "/addCard")
-    req.send(JSON.stringify(table))
-
+    req.send(serializeCard(table))
+    
     req.addEventListener("load", (response) => {
         console.log(response)
         enableAddCardModalButton()
@@ -617,6 +617,32 @@ function request(method, url, data = null) {
 
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+/**
+ * Description placeholder
+ * @date 06/03/2024 - 5:25:05 pm
+ *
+ * @param {Object} card
+ * @returns {*}
+ */
+function serializeCard(card){
+    // do we use the setter toplevel or bottomlevel name?
+    let serializedCard = {}
+    Object.assign(serializedCard, card)
+    for (f of ["_front", "_back", "front", "back"]){
+        if (card.hasOwnProperty(f)) serializedCard[f] = encrypt(f)
+    } // fields to encrypt because lol
+    
+    return JSON.stringify(serializedCard)
+}
+
+function deserializeCard(cardJson){
+    let card = JSON.parse(cardJson)
+    card._front = decrypt(card._front)
+    card._back = decrypt(card._back)
+    return card
 }
 
 alerts['deniednotifications'] = () => {
