@@ -393,7 +393,7 @@ function initializeCards(list) {
     cards = [];
     cardDict = {};
     for (let card in list) {
-        let c = new Card(list[card])
+        let c = new Card(deserializeCard(list[card]))
         if (c.getDueDateCount() != -1)
             cards.push(c)
         cardDict[c.id] = c
@@ -631,18 +631,25 @@ function serializeCard(card){
     // do we use the setter toplevel or bottomlevel name?
     let serializedCard = {}
     Object.assign(serializedCard, card)
+    console.log(card)
     for (f of ["_front", "_back", "front", "back"]){
-        if (card.hasOwnProperty(f)) serializedCard[f] = encrypt(f)
+        console.log(f)
+        console.log(card[f])
+        if (card.hasOwnProperty(f) && f) serializedCard[f] = encrypt(card[f])
+        console.log(card.hasOwnProperty(f))
     } // fields to encrypt because lol
     
     return JSON.stringify(serializedCard)
 }
 
-function deserializeCard(cardJson){
-    let card = JSON.parse(cardJson)
-    card._front = decrypt(card._front)
-    card._back = decrypt(card._back)
+function deserializeCard(card){
+    card.front = decrypt(card.front)
+    card.back = decrypt(card.back)
     return card
+}
+
+function deserializeCardJson(card){
+    return deserializeCard(JSON.parse(card))
 }
 
 alerts['deniednotifications'] = () => {
