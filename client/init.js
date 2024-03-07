@@ -393,7 +393,12 @@ function initializeCards(list) {
     cards = [];
     cardDict = {};
     for (let card in list) {
-        let c = new Card(deserializeCard(list[card]))
+        let c 
+        if (shouldDecrypt()){
+            c = new Card(deserializeCard(list[card]))
+        } else {
+            c = new Card(list[card])
+        }
         if (c.getDueDateCount() != -1)
             cards.push(c)
         cardDict[c.id] = c
@@ -401,6 +406,9 @@ function initializeCards(list) {
 
     rebuildCardList()
     updateCardOverview()
+
+    if (!shouldDecrypt())
+        updateCardAsync(card)
 
 }
 
@@ -500,6 +508,7 @@ function showAlert(alertname, a, b, c) {
 }
 
 function retrieveSyncData() {
+    return "Disabled, for now"
     let req = new XMLHttpRequest()
     req.open("GET", window.location.origin + "/sync")
     req.addEventListener("load", (response) => {
@@ -545,6 +554,7 @@ function hideAllAlerts() {
 }
 
 function doSync() {
+    return "Disabled, for now"
     let code = $("#settingsUserTokenInput").val()
     let req = new XMLHttpRequest()
     req.open("POST", window.location.origin + "/sync")
@@ -564,6 +574,11 @@ function doSync() {
 // lmao
 function getCard(id) {
     return id in cardDict && cardDict[id] || null;
+}
+
+function shouldDecrypt(){
+    if (!localStorage.getItem("key")) 
+        return false
 }
 
 function editCardButtonHandler(event, cardId) {
@@ -629,6 +644,9 @@ function delay(ms) {
  */
 function serializeCard(card){
     // do we use the setter toplevel or bottomlevel name?
+    if (card.constructor == Card){
+        card = card.toJSON()
+    }
     let serializedCard = {}
     Object.assign(serializedCard, card)
     console.log(card)
