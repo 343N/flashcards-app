@@ -408,7 +408,7 @@ function initializeCards(list) {
     updateCardOverview()
 
     if (!shouldDecrypt())
-        updateCardAsync(card)
+        for (let c of Object.values(cardDict)) updateCardAsync(c)
 
 }
 
@@ -579,6 +579,9 @@ function getCard(id) {
 function shouldDecrypt(){
     if (!localStorage.getItem("key")) 
         return false
+
+    return true
+    
 }
 
 function editCardButtonHandler(event, cardId) {
