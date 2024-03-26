@@ -815,7 +815,7 @@ ExpandedCard.expandHandler = (event) => {
 }
 
 
-ExpandedCard.close = (save=null, options=null) => {
+ExpandedCard.close = (save=true, options=null) => {
     let expandedCard = ExpandedCard.CURRENT
     expandedCard.close(save, options)
 }
